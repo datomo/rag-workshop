@@ -61,7 +61,7 @@ export class JsonCollectionsLoader extends BaseLoader<{ type: 'JsonCollectionsLo
                         metadata: {
                             ...chunk.metadata,
                             type: <'JsonCollectionsLoader'>'JsonCollectionsLoader',
-                            originalSource: this.url,
+                            originalSource: this.reformatFilePath(this.url),
                         },
                     };
                 }
@@ -89,5 +89,10 @@ export class JsonCollectionsLoader extends BaseLoader<{ type: 'JsonCollectionsLo
                 }
             }
         }
+
+    }
+
+    reformatFilePath(filePath: string) {
+        return `file:///`+filePath.replace(/ /g, '%20');
     }
 }
