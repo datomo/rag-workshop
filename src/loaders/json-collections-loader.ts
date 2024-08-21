@@ -93,6 +93,6 @@ export class JsonCollectionsLoader extends BaseLoader<{ type: 'JsonCollectionsLo
     }
 
     reformatFilePath(filePath: string) {
-        return `file:///`+filePath.replace(/ /g, '%20');
+        return filePath.replace(/ /g, '%20');
     }
 }

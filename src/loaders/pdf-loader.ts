@@ -50,6 +50,6 @@ export class PdfLoader extends BaseLoader<{ type: 'PdfLoader' }> {
     }
 
     reformatFilePath(filePath: string) {
-        return `file:///`+filePath.replace(/ /g, '%20');    
+        return filePath.replace(/ /g, '%20');
     }
 }
