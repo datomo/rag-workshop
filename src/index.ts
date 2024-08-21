@@ -5,6 +5,7 @@ import { YoutubeLoader } from './loaders/youtube-loader.js';
 import { PdfLoader } from './loaders/pdf-loader.js';
 import { WebLoader } from './loaders/web-loader.js';
 import { JsonLoader } from './loaders/json-loader.js';
+import { JsonCollectionsLoader} from './loaders/json-collections-loader.js';
 import { ExcelLoader } from './loaders/excel-loader.js';
 import { DocxLoader } from './loaders/docx-loader.js';
 import { PptLoader } from './loaders/ppt-loader.js';
@@ -38,6 +39,7 @@ export {
     PdfLoader,
     WebLoader,
     JsonLoader,
+    JsonCollectionsLoader,
     DocxLoader,
     ExcelLoader,
     PptLoader,

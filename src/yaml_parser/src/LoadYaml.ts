@@ -2,7 +2,25 @@
 import * as fs from 'fs';
 import * as yaml from 'js-yaml';
 import * as process from 'process';
-import { Anthropic, BaseLoader, CohereEmbeddings, ConfluenceLoader, DocxLoader, GeckoEmbedding, OpenAi, PdfLoader, SitemapLoader, VertexAI, WebLoader, YoutubeSearchLoader, YoutubeLoader, YoutubeChannelLoader, PptLoader, JsonLoader } from '../../index.js';
+import {
+  Anthropic,
+  BaseLoader,
+  CohereEmbeddings,
+  ConfluenceLoader,
+  DocxLoader,
+  GeckoEmbedding,
+  OpenAi,
+  PdfLoader,
+  SitemapLoader,
+  VertexAI,
+  WebLoader,
+  YoutubeSearchLoader,
+  YoutubeLoader,
+  YoutubeChannelLoader,
+  PptLoader,
+  JsonCollectionsLoader,
+  AdaEmbeddings,
+} from '../../index.js';
 import { MongoDBAtlas } from '../../vectorDb/mongo-db-atlas.js';
 import { strict as assert } from 'assert';
 import { AnyscaleModel } from '../../models/anyscale-model.js';
@@ -127,6 +145,8 @@ export function getEmbeddingModel() {
         apiVersion: parsedData.embedding.api_version,
         azureOpenAIApiInstanceName: parsedData.embedding.azure_openai_api_instance_name
       });
+    case 'AdaEmbeddings':
+      return new AdaEmbeddings();
     case 'Cohere':
       return new CohereEmbeddings({ modelName: parsedData.embedding.model_name });
     case 'Titan':
@@ -156,6 +176,13 @@ export function getIngestLoader() {
     switch (data.source) {
       case 'web':
         dataloaders.push(new WebLoader({
+          url: data.source_path,
+          chunkSize: data.chunk_size,
+          chunkOverlap: data.chunk_overlap,
+        }));
+        break;
+      case 'json-collection':
+        dataloaders.push(new JsonCollectionsLoader({
           url: data.source_path,
           chunkSize: data.chunk_size,
           chunkOverlap: data.chunk_overlap,

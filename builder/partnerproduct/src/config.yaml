@@ -1,13 +1,13 @@
 ingest:
-  - source: 'pdf'
-    source_path: '<file_path>'
+  - source: 'json-collection'
+    source_path: '/Users/datomo/git/rag-workshop/maap-chatbot-builder/unibas.json'
     chunk_size: 2000
     chunk_overlap: 200
 embedding:
-    class_name: Nomic-v1.5
+    class_name: AdaEmbeddings
 vector_store:
-    connectionString: '<you_mdb_connection_string>'
-    dbName: '<db_name>'
+    connectionString: 'mongodb+srv://davelengw:davelengw@c0.x2fln.mongodb.net/'
+    dbName: 'chatter'
     collectionName: 'embedded_content'
     embeddingKey: 'embedding'
     textKey: 'text'

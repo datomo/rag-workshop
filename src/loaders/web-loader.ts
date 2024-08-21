@@ -3,6 +3,7 @@ import createDebugMessages from 'debug';
 import { convert } from 'html-to-text';
 import axios from 'axios';
 import md5 from 'md5';
+import * as cheerio from 'cheerio';
 
 import { BaseLoader } from '../interfaces/base-loader.js';
 import { cleanString, truncateCenterString } from '../util/strings.js';
@@ -11,23 +12,28 @@ export class WebLoader extends BaseLoader<{ type: 'WebLoader' }> {
     private readonly debug = createDebugMessages('maap:loader:WebLoader');
     private readonly contentOrUrl: string;
     private readonly isUrl: boolean;
+    private readonly withSubpages: boolean;
 
-    constructor({}: { url: string; chunkSize?: number; chunkOverlap?: number });
-    constructor({}: { content: string; chunkSize?: number; chunkOverlap?: number });
+    constructor({}: { url: string; chunkSize?: number; chunkOverlap?: number, withSubpages?: boolean });
+    constructor({}: { content: string; chunkSize?: number; chunkOverlap?: number, withSubpages?: boolean });
     constructor({
         content,
         url,
         chunkSize,
         chunkOverlap,
+        withSubpages,
     }: {
         content?: string;
         url?: string;
         chunkSize?: number;
         chunkOverlap?: number;
+        withSubpages?: boolean;
+
     }) {
         super(`WebLoader_${md5(content ? `CONTENT_${content}` : `URL_${url}`)}`, chunkSize ?? 2000, chunkOverlap ?? 0);
 
-        this.isUrl = content ? false : true;
+        this.isUrl = !content;
+        this.withSubpages = withSubpages ? withSubpages : false;
         this.contentOrUrl = content ?? url;
     }
 
@@ -42,7 +48,40 @@ export class WebLoader extends BaseLoader<{ type: 'WebLoader' }> {
                 ? (await axios.get<string>(this.contentOrUrl, { responseType: 'document' })).data
                 : this.contentOrUrl;
 
+            if(this.withSubpages){
+                // search for links
+                const html = cheerio.load(data);
+                let links = [];
+
+                html("a").each((_i, value) => {
+                    let link = html(value).attr("href");
+                    if( link.includes("unibas.ch")){
+                        links.push(link)
+                    }
+                })
+
+                for (let link of links) {
+                    console.log("🆕LOADING Subpage: " + link)
+                    const webLoader = new WebLoader({ url:link, chunkSize: this.chunkSize, chunkOverlap: this.chunkOverlap, withSubpages:false });
+
+                    for await (const chunk of webLoader.getUnfilteredChunks()) {
+                        yield {
+                            ...chunk,
+                            metadata: {
+                                ...chunk.metadata,
+                                type: <'JsonCollectionsLoader'>'JsonCollectionsLoader',
+                                originalSource: link,
+                            },
+                        };
+                    }
+                }
+
+            }
+
             const text = convert(data, {
+                baseElements: {
+                    selectors: ['section.content_block'],
+                },
                 wordwrap: false,
                 preserveNewlines: false,
             }).replace(/(?:https?|ftp):\/\/[\n\S]+/g, '');

@@ -20,6 +20,7 @@ export class SitemapLoader extends BaseLoader<{ type: 'SitemapLoader' }> {
             const { sites } = await new Sitemapper({ url: this.url, timeout: 15000 }).fetch();
             this.debug(`Sitemap '${this.url}' returned ${sites.length} URLs`);
 
+            console.log( "🆕LOADING Sitemap: " + this.url);
             for (const url of sites) {
                 const webLoader = new WebLoader({ url, chunkSize: this.chunkSize, chunkOverlap: this.chunkOverlap });
 
