@@ -1,5 +1,16 @@
 # MAAP Framework 
 
+_Instruction RAG Workshop_:
+You have to provide the .env file with your configuration, according to the instructions presented by Philip Eschenbacher, during the first part of the workshop.
+To use the json collection loader you have to link to a json file containing your resources in your config.yaml, this is currently hardcoded, so feel free to adjust that.
+
+### Potential Adjustments:
+- Better filtering which sublinks to follow
+- More configurations regarding how many links to follow
+- Connect additional sources in the json collection loader
+- Improve (universify) look and feel of chat interface
+
+
 ### Introduction 
 The [MongoDB AI Applications Program (MAAP)](https://www.mongodb.com/services/consulting/ai-applications-program) framework is a set of libraries that you can use to build your RAG Application
 using MongoDB and [Atlas Vector Search](https://www.mongodb.com/docs/atlas/atlas-vector-search/vector-search-overview/) and associated MAAP partners
