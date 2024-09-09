@@ -6,7 +6,7 @@ ingest:
 embedding:
     class_name: AdaEmbeddings
 vector_store:
-    connectionString: 'mongodb+srv://davelengw:davelengw@c0.x2fln.mongodb.net/'
+    connectionString: ''
     dbName: 'chatter'
     collectionName: 'embedded_content'
     embeddingKey: 'embedding'
