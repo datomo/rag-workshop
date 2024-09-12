@@ -1,5 +1,8 @@
 .App {
   text-align: center;
+  background: url("../public/background.png");
+  background-size: cover;
+  height: 100%;
 }
 
 .App-logo {
@@ -14,7 +17,7 @@
 }
 
 .App-header {
-  background-color: #a5d7d2;
+  background-color: transparent;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -54,5 +57,16 @@
 }
 
 .leafygreen-ui-lzhjlp{
-  background-color: #a5d7d2;
+  //background-color: #a5d7d2;
+}
+
+.chat {
+  position: fixed;
+  width: 100%;
+}
+
+.css-11if1xt{
+  bottom: 2rem;
+  right: 2rem;
+  position: fixed;
 }

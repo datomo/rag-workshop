@@ -24,6 +24,7 @@ export class SitemapLoader extends BaseLoader<{ type: 'SitemapLoader' }> {
 
             console.log( "🆕LOADING Sitemap: " + this.url);
             for (const url of sites) {
+                console.log("🆕LOADING: " + url);
                 const webLoader = new WebLoader({ url, chunkSize: this.chunkSize, chunkOverlap: this.chunkOverlap, subpages: this.subpages });
 
                 for await (const chunk of webLoader.getUnfilteredChunks()) {
