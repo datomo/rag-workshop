@@ -8,10 +8,12 @@ import { SitemapLoader } from './sitemap-loader.js';
 
 export class JsonCollectionsLoader extends BaseLoader<{ type: 'JsonCollectionsLoader' }> {
     private readonly url: string;
+    private readonly subpages: number;
 
-    constructor({ url, chunkSize, chunkOverlap }: { url: string; chunkSize?: number; chunkOverlap?: number }) {
+    constructor({ url, chunkSize, chunkOverlap, subpages }: { url: string; chunkSize?: number; chunkOverlap?: number; subpages?: number }) {
         super(`SitemapLoader_${md5(url)}`, chunkSize ?? 2000, chunkOverlap);
         this.url = url;
+        this.subpages = subpages ?? 0;
     }
 
     override async *getUnfilteredChunks() {
@@ -30,7 +32,6 @@ export class JsonCollectionsLoader extends BaseLoader<{ type: 'JsonCollectionsLo
                 adjustedUrl = url.link;
                 withSubpages = url.subpages;
             }
-            adjustedUrl = adjustedUrl;
             let msg = "🆕LOADING";
             if (withSubpages) {
                 msg += " with subpages"
@@ -40,7 +41,7 @@ export class JsonCollectionsLoader extends BaseLoader<{ type: 'JsonCollectionsLo
 
 
             if( adjustedUrl.toLowerCase().endsWith(".xml")){
-                const sitemapLoader = new SitemapLoader({ url, chunkSize: this.chunkSize, chunkOverlap: this.chunkOverlap });
+                const sitemapLoader = new SitemapLoader({ url, chunkSize: this.chunkSize, chunkOverlap: this.chunkOverlap, subpages: this.subpages });
 
                 for await (const chunk of sitemapLoader.getUnfilteredChunks()) {
                     yield {
@@ -71,7 +72,7 @@ export class JsonCollectionsLoader extends BaseLoader<{ type: 'JsonCollectionsLo
                         url: adjustedUrl,
                         chunkSize: this.chunkSize,
                         chunkOverlap: this.chunkOverlap,
-                        withSubpages
+                        subpages: this.subpages
                     });
 
                     for await (const chunk of webLoader.getUnfilteredChunks()) {

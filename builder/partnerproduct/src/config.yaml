@@ -3,6 +3,7 @@ ingest:
     source_path: '/Users/datomo/git/rag-workshop/maap-chatbot-builder/unibas.json'
     chunk_size: 2000
     chunk_overlap: 200
+    subpages: 2
 embedding:
     class_name: AdaEmbeddings
 vector_store:

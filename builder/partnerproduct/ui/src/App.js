@@ -1,14 +1,12 @@
 import './App.css';
 import Chatbot, {
-  FloatingActionButtonTrigger,
   InputBarTrigger,
   ModalView,
 } from "mongodb-chatbot-ui";
 
 const suggestedPrompts = [
-  "Why should I use the MongoDB Chatbot Framework?",
-  "How does the framework use Atlas Vector Search?",
-  "Do you support using LLMs from OpenAI?",
+  "How old is the university of Basel?",
+  "What do i have to do to take part in the exam for dental medicine?",
 ];
 
 function App() {
@@ -19,9 +17,8 @@ function App() {
       <Chatbot darkMode={true} serverBaseUrl="http://localhost:9000/api/v1" shouldStream={false} isExperimental={false}>
         <>
           <InputBarTrigger suggestedPrompts={suggestedPrompts} />
-          {/* <FloatingActionButtonTrigger text="My MongoDB AI" /> */}
           <ModalView
-            initialMessageText="Welcome to MongoDB AI Assistant. What can I help you with?"
+            initialMessageText="Welcome to UniBot your digital resource all things university Basel. What do you wana learn today?"
             initialMessageSuggestedPrompts={suggestedPrompts}
           />
         </>

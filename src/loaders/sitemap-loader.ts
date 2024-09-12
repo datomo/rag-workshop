@@ -8,10 +8,12 @@ import { WebLoader } from './web-loader.js';
 export class SitemapLoader extends BaseLoader<{ type: 'SitemapLoader' }> {
     private readonly debug = createDebugMessages('maap:loader:SitemapLoader');
     private readonly url: string;
+    private readonly subpages: number;
 
-    constructor({ url, chunkSize, chunkOverlap }: { url: string; chunkSize?: number; chunkOverlap?: number }) {
+    constructor({ url, chunkSize, chunkOverlap, subpages }: { url: string; chunkSize?: number; chunkOverlap?: number, subpages?: number }) {
         super(`SitemapLoader_${md5(url)}`, chunkSize ?? 2000, chunkOverlap);
         this.url = url;
+        this.subpages = subpages ?? 0;
     }
 
     override async *getUnfilteredChunks() {
@@ -22,7 +24,7 @@ export class SitemapLoader extends BaseLoader<{ type: 'SitemapLoader' }> {
 
             console.log( "🆕LOADING Sitemap: " + this.url);
             for (const url of sites) {
-                const webLoader = new WebLoader({ url, chunkSize: this.chunkSize, chunkOverlap: this.chunkOverlap });
+                const webLoader = new WebLoader({ url, chunkSize: this.chunkSize, chunkOverlap: this.chunkOverlap, subpages: this.subpages });
 
                 for await (const chunk of webLoader.getUnfilteredChunks()) {
                     yield {

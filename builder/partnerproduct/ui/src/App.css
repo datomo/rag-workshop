@@ -14,7 +14,7 @@
 }
 
 .App-header {
-  background-color: #282c34;
+  background-color: #a5d7d2;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -35,4 +35,24 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+.leafygreen-ui-i5hsjh{
+  display: none;
+}
+
+.leafygreen-ui-5j9epf{
+  display: none;
+}
+
+.leafygreen-ui-12s0bki{
+  background-color: #a5d7d2;
+}
+
+.leafygreen-ui-12s0bki .leafygreen-ui-yv8bst{
+  color: black !important;
+}
+
+.leafygreen-ui-lzhjlp{
+  background-color: #a5d7d2;
 }

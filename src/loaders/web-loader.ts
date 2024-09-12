@@ -12,28 +12,28 @@ export class WebLoader extends BaseLoader<{ type: 'WebLoader' }> {
     private readonly debug = createDebugMessages('maap:loader:WebLoader');
     private readonly contentOrUrl: string;
     private readonly isUrl: boolean;
-    private readonly withSubpages: boolean;
+    private readonly subpages: number;
 
-    constructor({}: { url: string; chunkSize?: number; chunkOverlap?: number, withSubpages?: boolean });
-    constructor({}: { content: string; chunkSize?: number; chunkOverlap?: number, withSubpages?: boolean });
+    constructor({}: { url: string; chunkSize?: number; chunkOverlap?: number, subpages?: number });
+    constructor({}: { content: string; chunkSize?: number; chunkOverlap?: number, subpages?: number });
     constructor({
         content,
         url,
         chunkSize,
         chunkOverlap,
-        withSubpages,
+        subpages,
     }: {
         content?: string;
         url?: string;
         chunkSize?: number;
         chunkOverlap?: number;
-        withSubpages?: boolean;
+        subpages?: number;
 
     }) {
         super(`WebLoader_${md5(content ? `CONTENT_${content}` : `URL_${url}`)}`, chunkSize ?? 2000, chunkOverlap ?? 0);
 
         this.isUrl = !content;
-        this.withSubpages = withSubpages ? withSubpages : false;
+        this.subpages = subpages ? subpages : 0;
         this.contentOrUrl = content ?? url;
     }
 
@@ -48,21 +48,21 @@ export class WebLoader extends BaseLoader<{ type: 'WebLoader' }> {
                 ? (await axios.get<string>(this.contentOrUrl, { responseType: 'document' })).data
                 : this.contentOrUrl;
 
-            if(this.withSubpages){
+            if(this.subpages > 0){
                 // search for links
                 const html = cheerio.load(data);
                 let links = [];
 
                 html("a").each((_i, value) => {
                     let link = html(value).attr("href");
-                    if( link.includes("unibas.ch")){
+                    if( link.includes("unibas")){
                         links.push(link)
                     }
                 })
 
                 for (let link of links) {
                     console.log("🆕LOADING Subpage: " + link)
-                    const webLoader = new WebLoader({ url:link, chunkSize: this.chunkSize, chunkOverlap: this.chunkOverlap, withSubpages:false });
+                    const webLoader = new WebLoader({ url:link, chunkSize: this.chunkSize, chunkOverlap: this.chunkOverlap, subpages: this.subpages - 1 });
 
                     for await (const chunk of webLoader.getUnfilteredChunks()) {
                         yield {
