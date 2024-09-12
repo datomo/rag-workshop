@@ -10,6 +10,9 @@ To use the json collection loader you have to link to a json file containing you
 - Connect additional sources in the json collection loader
 - Improve (universify) look and feel of chat interface
 
+- Human-In-The-Loop for link aggregation
+- Deploy internally
+
 
 ### Introduction 
 The [MongoDB AI Applications Program (MAAP)](https://www.mongodb.com/services/consulting/ai-applications-program) framework is a set of libraries that you can use to build your RAG Application
