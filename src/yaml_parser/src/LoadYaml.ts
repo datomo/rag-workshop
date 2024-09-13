@@ -2,25 +2,7 @@
 import * as fs from 'fs';
 import * as yaml from 'js-yaml';
 import * as process from 'process';
-import {
-  Anthropic,
-  BaseLoader,
-  CohereEmbeddings,
-  ConfluenceLoader,
-  DocxLoader,
-  GeckoEmbedding,
-  OpenAi,
-  PdfLoader,
-  SitemapLoader,
-  VertexAI,
-  WebLoader,
-  YoutubeSearchLoader,
-  YoutubeLoader,
-  YoutubeChannelLoader,
-  PptLoader,
-  JsonCollectionsLoader,
-  AdaEmbeddings,
-} from '../../index.js';
+import { Anthropic, BaseLoader, CohereEmbeddings, ConfluenceLoader, DocxLoader, GeckoEmbedding, OpenAi, PdfLoader, SitemapLoader, VertexAI, WebLoader, YoutubeSearchLoader, YoutubeLoader, YoutubeChannelLoader, PptLoader, JsonLoader } from '../../index.js';
 import { MongoDBAtlas } from '../../vectorDb/mongo-db-atlas.js';
 import { strict as assert } from 'assert';
 import { AnyscaleModel } from '../../models/anyscale-model.js';
@@ -33,6 +15,7 @@ import { AzureOpenAiEmbeddings } from '../../embeddings/azure-embeddings.js';
 import { BedrockEmbedding } from '../../embeddings/bedrock-embeddings.js';
 import { FireworksEmbedding } from '../../embeddings/fireworks-embeddings.js';
 import { AzureChatAI } from '../../models/azureopenai-model.js';
+import { AdaEmbeddings } from '../../embeddings/ada-embeddings.js';
 
 // src/loaders/confluence-loader.ts src/loaders/docx-loader.ts src/loaders/excel-loader.ts src/loaders/json-loader.ts src/loaders/pdf-loader.ts src/loaders/ppt-loader.ts src/loaders/sitemap-loader.ts src/loaders/text-loader.ts src/loaders/web-loader.ts src/loaders/youtube-channel-loader.ts src/loaders/youtube-loader.ts src/loaders/youtube-search-loader.ts
 function getDataFromYamlFile() {
@@ -145,8 +128,6 @@ export function getEmbeddingModel() {
         apiVersion: parsedData.embedding.api_version,
         azureOpenAIApiInstanceName: parsedData.embedding.azure_openai_api_instance_name
       });
-    case 'AdaEmbeddings':
-      return new AdaEmbeddings();
     case 'Cohere':
       return new CohereEmbeddings({ modelName: parsedData.embedding.model_name });
     case 'Titan':
@@ -159,6 +140,8 @@ export function getEmbeddingModel() {
       return new NomicEmbeddingsv1();
     case 'Nomic-v1.5':
       return new NomicEmbeddingsv1_5();
+    case 'AdaEmbeddings':
+      return new AdaEmbeddings();
     default:
       // Handle unsupported class name (optional)
       return new NomicEmbeddingsv1_5(); // Or throw an error
@@ -176,13 +159,6 @@ export function getIngestLoader() {
     switch (data.source) {
       case 'web':
         dataloaders.push(new WebLoader({
-          url: data.source_path,
-          chunkSize: data.chunk_size,
-          chunkOverlap: data.chunk_overlap,
-        }));
-        break;
-      case 'json-collection':
-        dataloaders.push(new JsonCollectionsLoader({
           url: data.source_path,
           chunkSize: data.chunk_size,
           chunkOverlap: data.chunk_overlap,

@@ -102,6 +102,7 @@ Which two National Centres of Competence in Research (NCCRs) are currently runni
 The expected answer: "Molecular Systems Engineering" and "Quantum Science and Technology."
 
 
+
 ----
 # Example for Gemini and VertexAI
 
