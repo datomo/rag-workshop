@@ -1,3 +1,13 @@
+"""
+RAG Cost App
+
+Author: Anastasiia Popova
+Email: anastasiia.popova@stud.unibas.ch
+
+Note:
+Perplexity AI assisted in code writing, editing, and more effective information searches. The generated output underwent critical evaluation. The author is solely responsible for the content.
+"""
+
 import sys
 from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QLabel, QLineEdit, QPushButton, QVBoxLayout, QGridLayout
 
@@ -93,7 +103,7 @@ class RAGCalculator(QMainWindow):
             # COST OF MODELS
             input_cost = 0.6
             output_cost = 0.15
-            emb_cost = 0.020
+            emb_cost = 0.10
             tokens_per_cost = 1000000
 
             price_llm = calculate_llm_cost(rag_input, avg_output_tokens, input_cost, output_cost, num_requests, tokens_per_cost)
