@@ -1,3 +1,12 @@
+
+To run an empty, but promising UI, go to `builder/partnerproduct/ui/streamlit_ui/rag_chat_ui.py`
+
+```
+streamlit run rag_chat_ui.py
+```
+
+----
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
