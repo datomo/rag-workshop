@@ -128,6 +128,12 @@ const config: AppConfig = {
     },
     maxRequestTimeoutMs: 30000,
     serveStaticSite: true,
+    corsOptions: {
+        origin: 'http://localhost:3000',
+        methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+        preflightContinue: false,
+        optionsSuccessStatus: 204
+    }
 };
 
 // Start the server and clean up resources on SIGINT.
