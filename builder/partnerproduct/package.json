@@ -21,6 +21,7 @@
         "@smithy/util-utf8": "^3.0.0",
         "axios": "^1.7.2",
         "axios-digest": "^0.3.0",
+        "cors": "^2.8.5",
         "dotenv": "^16.4.5",
         "i": "^0.3.7",
         "mongodb-chatbot-ui": "^0.7.2",
