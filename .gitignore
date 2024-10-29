@@ -8,7 +8,9 @@ yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
 .pnpm-debug.log*
-.DS_Store
+**/.DS_Store 
+.ipynb_checkpoints
+*/.ipynb_checkpoints/*
 
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
@@ -154,3 +156,5 @@ zookeeper/
 acme.json
 temp/
 storage/
+
+

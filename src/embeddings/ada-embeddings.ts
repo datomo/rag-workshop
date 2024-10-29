@@ -12,6 +12,7 @@ export class AdaEmbeddings implements BaseEmbeddings {
         return 1536;
     }
 
+
     embedDocuments(texts: string[]): Promise<number[][]> {
         return this.model.embedDocuments(texts);
     }
