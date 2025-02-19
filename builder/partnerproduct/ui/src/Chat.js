@@ -5,7 +5,7 @@ import Chatbot, {
 } from "mongodb-chatbot-ui";
 
 const suggestedPrompts = [
-    "How old is the University of Basel?",
+    "Wie alt ist die Universität Basel?",
     "Wie muss ich mich für ein Examen (Prüfung zu einer Hauptvorlesung) anmelden?",
     "Welche Schritte muss ich unternehmen, um sicherzustellen, dass meine Bachelor- oder Masterarbeit den Anforderungen der Erklärung zur wissenschaftlichen Integrität entspricht, insbesondere in Bezug auf die Kennzeichnung von Quellen und die Verwendung von KI-unterstützter Technologie?",
 ];
@@ -19,7 +19,7 @@ function Chat() {
                     <>
                         <InputBarTrigger suggestedPrompts={suggestedPrompts} />
                         <ModalView
-                            initialMessageText="Willkommen beim Chatbot der Fakultät für Naturwissenschaften! 🤖 Ich bin hier, um zuverlässige Antworten zu geben, die auf den offiziellen Informationen der Fakultät basieren. Welche Informationen suchen Sie?"
+                            initialMessageText="Willkommen beim Unibas-Chatbot! 🤖 Ich helfe Ihnen gerne weiter. Sollte ich keine passenden Dokumente in meiner Datenbank finden, kann ich Ihre Frage leider nicht beantworten. Bitte beachten Sie, keine persönlichen oder sensiblen Informationen mit mir zu teilen. Wie kann ich Ihnen weiterhelfen? 😊"
                             initialMessageSuggestedPrompts={suggestedPrompts}
                         />
                     </>

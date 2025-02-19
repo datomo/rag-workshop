@@ -28,6 +28,9 @@ import {
 } from 'mongodb-chatbot-server';
 import { makeMongoDbEmbeddedContentStore, logger } from 'mongodb-rag-core';
 
+import { CohereReranker } from '../../../src/reranker/cohere-reranker.js';
+import { request } from 'node:http';
+
 
 // Load MAAP base classes
 const model = getModelClass();
@@ -56,7 +59,7 @@ const findContent = makeDefaultFindContent({
     embedder,
     store: embeddedContentStore,
     findNearestNeighborsOptions: {
-        k: 5,
+        k: 30,
         path: 'embedding',
         indexName: vectorSearchIndexName,
         numCandidates: numCandidates,
@@ -66,13 +69,64 @@ const findContent = makeDefaultFindContent({
 
 // For MAAP team: this shows how to use the withReranker and withQueryPreprocessor
 // functions to wrap the findContent function with reranking and preprocessing functionality.
+
+const cohereReranker = new CohereReranker({ modelName: "rerank-v3.5", k: 5 });
+
 const dummyRerank: Rerank = async ({ query, results }) => {
     return { results };
 };
+
+
+const cohereRerank: Rerank = async ({ query, results }) => {
+    // Create a map of original results for quick lookup
+    const originalResultsMap = new Map(
+        results.map(result => [String(result.metadata.id), result])
+    );
+
+    // Map to ExtractChunkData format for the reranker
+    const mappedResults = results.map(result => ({
+        pageContent: result.text,
+        metadata: {
+            id: String(result.metadata.id),
+            uniqueLoaderId: String(result.metadata.uniqueLoaderId),
+            source: String(result.metadata.source)
+        },
+        score: result.score
+    }));
+
+    // Get reranked results
+    const rerankedDocs = await cohereReranker.reRankDocuments(query, mappedResults);
+    
+    // Map back while preserving reranked order
+    const finalResults = rerankedDocs.map(doc => {
+        const originalResult = originalResultsMap.get(doc.metadata.id);
+        if (!originalResult) {
+            throw new Error(`Could not find original result for id ${doc.metadata.id}`);
+        }
+        return {
+            url: originalResult.url,
+            sourceName: originalResult.sourceName,
+            text: doc.pageContent,
+            tokenCount: originalResult.tokenCount,
+            embedding: originalResult.embedding,
+            metadata: doc.metadata,
+            updated: new Date(),
+            score: doc.score
+        };
+    });
+
+    return { results: finalResults };
+};
+
+
+
+
+
 const dummyPreprocess: PreProcessQuery = async ({ query }) => {
     return { preprocessedQuery: query };
 };
-const findContentWithRerank = withReranker({ findContentFunc: findContent, reranker: dummyRerank });
+const findContentWithRerank = withReranker({ findContentFunc: findContent, reranker: cohereRerank }); // dummyRerank // cohereRerank
+
 const findContentWithRerankAndPreprocess = withQueryPreprocessor({
     findContentFunc: findContentWithRerank,
     queryPreprocessor: dummyPreprocess,
@@ -97,19 +151,19 @@ User query: ${originalUserMessage}`;
 
 // Generates the user prompt for the chatbot using RAG
 const generateUserPrompt: GenerateUserPromptFunc = makeRagGenerateUserPrompt({
-    // findContent: findContentWithRerankAndPreprocess,
-    findContent: findContent,
+    //findContent: findContentWithRerankwithPreprocess,
+    findContent: findContentWithRerankAndPreprocess,
     makeUserMessage,
 });
 
 // System prompt for chatbot
 const systemPrompt: SystemPrompt = {
     role: 'system',
-    content: `You are a friendly human like chat bot. Use relevant provided context and chat history to answer the query at the end. Answer in full.
-    If you don't know the answer, just say that you don't know, don't try to make up an answer. 
-    Only answer in like an 3 year old child.
-    
-    Do not use words like context or training data when responding. You can say you do not have all the information but do not indicate that you are not a reliable source.`,
+    content: ` You are a friendly human-like chatbot. 
+    Use relevant provided context and chat history to answer the query at the end. 
+    Answer in full. If you don't know the answer, say that you don't know, don't try to make up an answer. 
+    Do not use words like context or training data when responding.
+    You can say you do not have all the information but do not indicate that you are not a reliable source.`,
 };
 
 // Create MongoDB collection and service for storing user conversations
