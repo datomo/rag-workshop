@@ -1,3 +1,8 @@
+## Modifications
+
+The purpose of these modifications was to adapt the app for document collection and evaluate the performance of the resulting system. All changes can be found in `builder/partnerproduct/src`.  
+
+
 To create `config.yaml` for ingestion into MongoDB, run the following script in `builder/partnerproduct/src`:  
 
 ```bash
@@ -11,10 +16,54 @@ This script configures and prepares data from web pages and PDF documents for a 
 - Discovers PDF files in the`/data` directory (to download them you can use `builder/partnerproduct/src/download_pdfs.py` script)  
 - Generates a **tested** configuration.  
 
+If you want to update `faculty_of_science_links.json`, you can run `builder/partnerproduct/src/notebooks/get_json.ipynb`.
 
---- 
-In folders `builder/partnerproduct/src` additional code in Python can be found. To make it work
+## Evaluation   
 
+One of the biggest challenges in building a reliable and cost-effective RAG system is the systematic evaluation of answers for a specific dataset. To evaluate the quality of the system, we created two datasets:  
+  1) **Real test dataset**: This dataset consists of privately sent documents containing questions and answers, as well as data from FAQ sections. More details can be found in `src/notebooks/tests/get_ground_truth.ipynb`.  
+  2) **Fake test dataset**: This dataset contains random records from the database with LLM-generated answers based only on a single record. See the last section in `src/notebooks/tests/get_RAG_answers.ipynb` for more details.    
+ 
+To assess retrieval, semantic similarity, and overall answer quality, four metrics were used: **recall, cosine similarity, Jaccard similarity, and unit tests** (with an LLM as the judge). Results of the evaluation can be found in `src/notebooks/tests/evaluate.ipynb` and `src/notebooks/tests/analyze.ipynb`. 
+
+ To determine the utility-cost tradeoff for the implemented RAG application with the specified configuration, one can use the RAG calculator by running the following command:
+
+  ```bash
+  python src/notebooks/RAG_calculator.py
+  ```  
+  More details can be found in `src/notebooks/RAG_calculator.ipynb`. 
+
+### Evaluation Metrics  
+
+| Metric               | Real Dataset | Fake Dataset |
+|----------------------|-------------|-------------|
+| Jaccard Similarity  | 0.11        | 0.36        |
+| Cosine Similarity   | 0.91        | 0.98        |
+| Recall             | 82%         | 70%         |
+| Unit Test Passed   | 47%         | 100%        |
+
+The **real dataset** introduces more complexity, leading to lower Jaccard similarity, lower unit test success rates, and artificially high recall. While cosine similarity remains high in both datasets, it may not be sufficient for evaluating true answer quality.  
+
+### Impact of Reranking  
+
+Reranking was applied by filtering vector search results through **post-selection using a specialized LLM** (Cohere was used to select 5 records from 30).  
+
+| Metric               | Real Dataset | Real Dataset (LLM with Reranking) |
+|----------------------|-------------|----------------------------------|
+| Jaccard Similarity  | 0.11 (max = 0.25) | 0.10 (max = 0.33) |
+| Cosine Similarity   | 0.91        | 0.91        |
+| Recall             | 82%         | 82%         |
+| Unit Test Passed   | 47%         | 59%         |
+
+### Takeaways  
+
+- **Similarity metrics confirm that the system provides answers consistent with expectations.** However, the recall metric should be either replaced with a more representative metric or supplemented with additional human-selected sources.  
+- **Unit tests using an LLM as the judge are a highly useful evaluation method** due to their sensitivity to changes in the pipeline.  
+- **Reranking positively impacted overall performance**, particularly in terms of the unit test success rate and maximum Jaccard similarity.  
+
+---
+
+To make additional code in `builder/partnerproduct/src` in Python work 
 
 ```
 python -m venv myenv
@@ -41,79 +90,6 @@ jupyter lab
 
 choose kernel with name `myenv`
 
-
-----
-
-in `builder/partnerproduct/src/notebooks` 
-
-![](config_rag.jpg)
-
-After setting up the system, we need to do two things:
-
-1. Create a `config.yaml` file.
-2. Run a set of three commands in the terminal to ingest documents, run the backend, and run the frontend.
-
-I decided to add all necessary links and PDF files to the config file automatically.
-
-I divided this problem into several tasks:
-
-- Obtain a JSON file with all the URL links (primarily include the main link and automatically find all sublinks; see `get_json.ipynb`.
-- Automatically download all PDF documents on these pages, see `get_json.ipynb`.
-
-Along the way:
-
-   - Set a document limit to control the size of the dataset, see `get_json.ipynb`.
-   - Count the number of characters in all URL and PDF documents (to evaluate the number of chunks that will be created later—this depends on the parser, but this is just for approximate evaluation; see `get_json.ipynb`).
-  
-- Generate the config file using the JSON and the downloaded documents (and check that it works, of course, see `get_config.py`).
-- Calculate the cost for this RAG configuration, which consists of the cost of the LLM (which might be expensive) and the cost of creating embeddings (which is relatively cheap), see `RAG_calculator.ipynb`.
-
-
-## Run Application
-
-1. Go to the `maap-chatbot-builder/builder/partnerproduct` directory.
-   
-2. Run the following command to ingest the documents:
-
-   ```
-   npm run ingest src/config.yaml
-   ```
-
-3. Open **MongoDB Compass** and check the embeddings in the **chatter** folder.
-
-4. Start the backend by running the following command:
-
-   ```
-   npm run start src/config.yaml
-   ```
-
-5. Start the UI: Navigate to the `builder/partnerproduct/ui` folder and run:
-
-   ```
-   npm start
-   ```
-
-Ask 
-
-```
-How many students are at the University of Basel?
-```
-
-The expected answer: I don’t know. 
-
-
-```
-What was the percentage of external funding for research in 2016?
-```
-
-The expected answer: 62%. 
-
-
-```
-Which two National Centres of Competence in Research (NCCRs) are currently running at the faculty?
-```
-
-The expected answer: "Molecular Systems Engineering" and "Quantum Science and Technology."
 
 
 

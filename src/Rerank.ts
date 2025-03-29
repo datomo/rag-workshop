@@ -24,7 +24,7 @@ interface WithRerankerParams {
  */
 export function withReranker({ findContentFunc, reranker }: WithRerankerParams): FindContentFunc {
     return async ({ query }) => {
-        const { queryEmbedding, content } = await findContentFunc(query);
+        const { queryEmbedding, content } = await findContentFunc({query});
         const { results } = await reranker({ query, results: content });
         return { queryEmbedding, content: results };
     };

@@ -10,7 +10,7 @@ export class CohereReranker implements BaseReranker {
 
     constructor(params) {
 
-        this.modelName = params?.modelName ?? "rerank-english-v2.0";
+        this.modelName = params?.modelName ?? "rerank-v3.5";
         this.topN = params?.k ?? 5;
 
         this.cohereRerank = new CohereRerank({

@@ -154,7 +154,7 @@ export function convertBaseRerankerToReranker(baseReranker: BaseReranker): Reran
         const embeddedContentOut: WithScore<EmbeddedContent>[] = [];
         for (const result of rerankedResults) {
             const foundRes = results.findIndex((r) => {
-                r.text === result.pageContent;
+                return r.text === result.pageContent;  // Explicit return statement, was without return
             });
             if (foundRes === -1) {
                 throw new Error('Could not find the original result in the reranked results');
