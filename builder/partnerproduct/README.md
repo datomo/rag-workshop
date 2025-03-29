@@ -1,5 +1,19 @@
+To create `config.yaml` for ingestion into MongoDB, run the following script in `builder/partnerproduct/src`:  
 
-in folders `builder/partnerproduct/src` and `builder/partnerproduct/ui` additional code in Python can be found. To make it work
+```bash
+python get_config.py
+```
+
+This script configures and prepares data from web pages and PDF documents for a RAG system. It:  
+
+- Securely prompts for a MongoDB connection string.  
+- Imports web URLs from the JSON file `builder/partnerproduct/src/faculty_of_science_links.json`.  
+- Discovers PDF files in the`/data` directory (to download them you can use `builder/partnerproduct/src/download_pdfs.py` script)  
+- Generates a **tested** configuration.  
+
+
+--- 
+In folders `builder/partnerproduct/src` additional code in Python can be found. To make it work
 
 
 ```
