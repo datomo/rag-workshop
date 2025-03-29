@@ -1,5 +1,5 @@
 config.yaml
-
+.vscode
 # Logs
 logs
 *.log
