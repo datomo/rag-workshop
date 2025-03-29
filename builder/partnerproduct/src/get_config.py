@@ -6,19 +6,19 @@ import getpass
 # == True shows a connection sting
 check_system = False
 
-chunk_size_web = 5000
-chunk_overlap_web = 500
+chunk_size_web = 4000
+chunk_overlap_web = 700
 
-chunk_size_pdf = 6000
-chunk_overlap_web = 600
+chunk_size_pdf = 4000
+chunk_overlap_web = 700
 
 
-directory_path = '../../../../data'  
-_directory_path = '../../../data'
+directory_path = '../../../data'  
+_directory_path = '../../data'
 
 def get_connection_str():
     try:
-        connection_string = getpass.getpass(prompt='Enter connection string from MongoDB')
+        connection_string = getpass.getpass(prompt='Enter connection string from MongoDB ')
     except Exception as error:
         print('ERROR', error)
     else:
@@ -42,7 +42,7 @@ def find_pdf_files(directory_from, directory_to ):
 def main():
     connection_string = get_connection_str()
     
-    with open('../faculty_of_science_links.json', 'r') as file:
+    with open('faculty_of_science_links.json', 'r') as file:
         data_web = json.load(file)
 
     print("JSON file imported successfully.")
@@ -103,7 +103,7 @@ def main():
     
     data.update(data_config)
 
-    with open('../config.yaml', 'w') as file:
+    with open('config.yaml', 'w') as file:
         yaml.dump(data, file, default_flow_style=False, sort_keys=False)
 
     print("YAML file created successfully.")

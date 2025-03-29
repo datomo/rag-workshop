@@ -1,4 +1,5 @@
 import 'dotenv/config';
+import cors from 'cors';  // Import CORS package
 import {
     getModelClass,
     getEmbeddingModel,
@@ -184,11 +185,21 @@ const config: AppConfig = {
     serveStaticSite: true,
 };
 
+const corsOptions = {
+    origin: 'http://localhost:3000',
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
+    preflightContinue: false,
+    optionsSuccessStatus: 204
+}
+
 // Start the server and clean up resources on SIGINT.
 const PORT = process.env.PORT || 9000;
 const startServer = async () => {
     logger.info('Starting server...');
     const app = await makeApp(config);
+
+    app.use(cors(corsOptions));
+
     const server = app.listen(PORT, () => {
         logger.info(`Server listening on port: ${PORT}`);
     });

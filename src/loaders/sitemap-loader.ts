@@ -33,7 +33,7 @@ export class SitemapLoader extends BaseLoader<{ type: 'SitemapLoader' }> {
                         metadata: {
                             ...chunk.metadata,
                             type: <'SitemapLoader'>'SitemapLoader',
-                            originalSource: this.url,
+                            originalSource: url,
                         },
                     };
                 }

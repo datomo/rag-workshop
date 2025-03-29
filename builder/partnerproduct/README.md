@@ -1,15 +1,22 @@
 ## Modifications
 
-The purpose of these modifications was to adapt the app for document collection and evaluate the performance of the resulting system. All changes can be found in `src/notebooks`.  
-
-- To collect all necessary documents for ingestion into the database, the script `src/notebooks/get_json.ipynb` extracts data from a small subset of links using web scraping. It verifies that the links work, counts characters, selects first-order sublinks, and saves them. The URLs and PDFs used can be found in `src/faculty_of_science_links.json`. For the evaluation of system quality, FAQ sections of websites were excluded from the dataset.  
-
-- The selected configuration file, `config.yaml`, can be created using `src/notebooks/get_config.py`. Then, using the MAAP standard workflow, documents can be ingested with `npm run ingest src/config.yaml`. To start the backend, use `npm run start src/config.yaml`, and to launch the UI, run `npm start`. The application should look like this:  
-
-![demo](demo.png)
+The purpose of these modifications was to adapt the app for document collection and evaluate the performance of the resulting system. All changes can be found in `builder/partnerproduct/src`.  
 
 
-In the current version PDF files can be find in local folder. 
+To create `config.yaml` for ingestion into MongoDB, run the following script in `builder/partnerproduct/src`:  
+
+```bash
+python get_config.py
+```
+
+This script configures and prepares data from web pages and PDF documents for a RAG system. It:  
+
+- Securely prompts for a MongoDB connection string.  
+- Imports web URLs from the JSON file `builder/partnerproduct/src/faculty_of_science_links.json`.  
+- Discovers PDF files in the`/data` directory (to download them you can use `builder/partnerproduct/src/download_pdfs.py` script)  
+- Generates a **tested** configuration.  
+
+If you want to update `faculty_of_science_links.json`, you can run `builder/partnerproduct/src/notebooks/get_json.ipynb`.
 
 ## Evaluation   
 
