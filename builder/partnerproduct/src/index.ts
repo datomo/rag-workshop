@@ -71,7 +71,7 @@ const findContent = makeDefaultFindContent({
 // For MAAP team: this shows how to use the withReranker and withQueryPreprocessor
 // functions to wrap the findContent function with reranking and preprocessing functionality.
 
-const cohereReranker = new CohereReranker({ modelName: "rerank-v3.5", k: 5 });
+const cohereReranker = null;//new CohereReranker({ modelName: "rerank-v3.5", k: 5 });
 
 const dummyRerank: Rerank = async ({ query, results }) => {
     return { results };
@@ -126,7 +126,7 @@ const cohereRerank: Rerank = async ({ query, results }) => {
 const dummyPreprocess: PreProcessQuery = async ({ query }) => {
     return { preprocessedQuery: query };
 };
-const findContentWithRerank = withReranker({ findContentFunc: findContent, reranker: cohereRerank }); // dummyRerank // cohereRerank
+const findContentWithRerank = withReranker({ findContentFunc: findContent, reranker: dummyRerank }); // dummyRerank // cohereRerank
 
 const findContentWithRerankAndPreprocess = withQueryPreprocessor({
     findContentFunc: findContentWithRerank,
@@ -153,7 +153,8 @@ User query: ${originalUserMessage}`;
 // Generates the user prompt for the chatbot using RAG
 const generateUserPrompt: GenerateUserPromptFunc = makeRagGenerateUserPrompt({
     //findContent: findContentWithRerankwithPreprocess,
-    findContent: findContentWithRerankAndPreprocess,
+    //findContent: findContentWithRerankAndPreprocess,
+    findContent: findContent,
     makeUserMessage,
 });
 
