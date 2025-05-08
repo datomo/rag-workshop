@@ -15,7 +15,7 @@ function Chat() {
         <div className="chat">
 
             <header className="App-header">
-                <Chatbot darkMode={true} serverBaseUrl="http://localhost:9000/api/v1" shouldStream={false} isExperimental={false}>
+                <Chatbot darkMode={true} serverBaseUrl="https://rag-backend.xreco-retrieval.ch/api/v1" shouldStream={false} isExperimental={false}>
                         <InputBarTrigger suggestedPrompts={suggestedPrompts} />
                         <ModalView
                             initialMessageText="Willkommen beim Unibas-Chatbot! 🤖 Ich helfe Ihnen gerne weiter. Sollte ich keine passenden Dokumente in meiner Datenbank finden, kann ich Ihre Frage leider nicht beantworten. Bitte beachten Sie, keine persönlichen oder sensiblen Informationen mit mir zu teilen. Wie kann ich Ihnen weiterhelfen? 😊"
